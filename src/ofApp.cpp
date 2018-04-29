@@ -69,7 +69,6 @@ void ofApp::setup() {
     ofLoadImage(textures[4], "VRSP07.gvintermediate.png");
     ofLoadImage(textures[5], "VRSP08.gvintermediate.png");
     
-    the_thumbnails.resize(6);
     //rendering_scene_thumbnail = std::make_shared<ofTexture>();
     rendering_scene_thumbnail.allocate(1280, 720, GL_RGBA);
     rendering_scene_thumbnail2.allocate(1280, 720, GL_RGBA);
@@ -77,6 +76,7 @@ void ofApp::setup() {
     ofEnableArbTex();
     
     
+    drag_drop.loadThumbnails();
     
     metatag = { "All", "Primitive", "Realistic", "Potemkin", "Glitch", "Doped" };
     tag_num = metatag.size();
@@ -231,108 +231,8 @@ void ofApp::draw() {
     
     
     //DRAG DROP TEST----------------------------------------------------
-    //SRC
-    ImGui::Begin("PREVIEW");
-    style.FramePadding = ImVec2(2.f, 2.f);
-    style.ItemSpacing = ImVec2(2.f, 2.f);
-    
-    ImGui::BeginChild("src_child1", ImVec2(90, 55));
-    
-    ImGui::ImageButton((ImTextureID)(uintptr_t) textures[0].getTextureData().textureID, ImVec2(80, 45)); ImGui::SameLine();
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("_oFScn", &textures[0], sizeof(textures[1]), ImGuiCond_Once);
-        ImGui::ImageButton((ImTextureID)(uintptr_t) textures[0].getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::EndChild(); ImGui::SameLine();
-    
-    
-    ImGui::BeginChild("src_child2", ImVec2(90, 55));
-    ImGui::ImageButton((ImTextureID)(uintptr_t) textures[1].getTextureData().textureID, ImVec2(80, 45)); ImGui::SameLine();
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("_oFScn", &textures[1], sizeof(textures[1]), ImGuiCond_Once);
-        ImGui::ImageButton((ImTextureID)(uintptr_t) textures[1].getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::EndChild(); ImGui::SameLine();
-    
-    ImGui::BeginChild("src_child3", ImVec2(90, 55));
-    ImGui::ImageButton((ImTextureID)(uintptr_t) textures[2].getTextureData().textureID, ImVec2(80, 45)); ImGui::SameLine();
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("_oFScn", &textures[2], sizeof(textures[1]), ImGuiCond_Once);
-        ImGui::ImageButton((ImTextureID)(uintptr_t) textures[2].getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::EndChild(); ImGui::SameLine();
-    
-    ImGui::BeginChild("src_child4", ImVec2(90, 55));
-    ImGui::ImageButton((ImTextureID)(uintptr_t) textures[3].getTextureData().textureID, ImVec2(80, 45)); ImGui::SameLine();
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("_oFScn", &textures[3], sizeof(textures[1]), ImGuiCond_Once);
-        ImGui::ImageButton((ImTextureID)(uintptr_t) textures[3].getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::EndChild(); ImGui::SameLine();
-    
-    ImGui::BeginChild("src_child5", ImVec2(90, 55));
-    ImGui::ImageButton((ImTextureID)(uintptr_t) textures[4].getTextureData().textureID, ImVec2(80, 45)); ImGui::SameLine();
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("_oFScn", &textures[4], sizeof(textures[1]), ImGuiCond_Once);
-        ImGui::ImageButton((ImTextureID)(uintptr_t) textures[4].getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::EndChild(); ImGui::SameLine();
-    
-    ImGui::BeginChild("src_child6", ImVec2(90, 55));
-    ImGui::ImageButton((ImTextureID)(uintptr_t) textures[5].getTextureData().textureID, ImVec2(80, 45)); ImGui::SameLine();
-    if (ImGui::BeginDragDropSource()) {
-        ImGui::SetDragDropPayload("_oFScn", &textures[5], sizeof(textures[1]), ImGuiCond_Once);
-        ImGui::ImageButton((ImTextureID)(uintptr_t) textures[5].getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::EndChild(); ImGui::SameLine();
-    
-    
-    
-    
-    
-    style.FramePadding = ImVec2(2.f, 0.f);
-    style.ItemSpacing = ImVec2(8.f, 4.f);
-    ImGui::End();
-    
-    
-    //DST-----------------------------
-    ImGui::Begin("DST");
-    ImGui::ImageButton((ImTextureID)(uintptr_t) rendering_scene_thumbnail.getTextureData().textureID, ImVec2(160, 90), ImVec2(0, 0), ImVec2(1, 1), 0);
-    if(ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_oFScn")) {
-            IM_ASSERT(payload->DataSize == sizeof(textures[0]));
-            memcpy((void*)&rendering_scene_thumbnail, payload->Data, sizeof(textures[0]));
-        }
-    }
-    ImGui::End();
-    
-    //DST-----------------------------
-    ImGui::Begin("DST2");
-    ImGui::ImageButton((ImTextureID)(uintptr_t) rendering_scene_thumbnail2.getTextureData().textureID, ImVec2(160, 90), ImVec2(0, 0), ImVec2(1, 1), 0);
-    if(ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_oFScn")) {
-            IM_ASSERT(payload->DataSize == sizeof(textures[0]));
-            memcpy((void*)&rendering_scene_thumbnail2, payload->Data, sizeof(textures[0]));
-        }
-    }
-    ImGui::End();
-    
-    //DST-----------------------------
-    ImGui::Begin("DST3");
-    ImGui::ImageButton((ImTextureID)(uintptr_t) rendering_scene_thumbnail3.getTextureData().textureID, ImVec2(160, 90), ImVec2(0, 0), ImVec2(1, 1), 0);
-    if(ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("_oFScn")) {
-            IM_ASSERT(payload->DataSize == sizeof(textures[0]));
-            memcpy((void*)&rendering_scene_thumbnail3, payload->Data, sizeof(textures[0]));
-        }
-    }
-    ImGui::End();
+    drag_drop.drawGui();
+
     
     
     

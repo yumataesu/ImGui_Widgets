@@ -6,6 +6,8 @@
 #include "Gui/Tab.hpp"
 #include "Gui/Histgram.h"
 #include "Gui/Combo.hpp"
+#include "Gui/DragDrop.hpp"
+
 
 class ofApp : public ofBaseApp{
     
@@ -28,6 +30,7 @@ public:
     ofxImGui::Gui imgui;
     std::array<ttt::ColorPicker, 12> color_pickers;
     ttt::Histgram histgram;
+    ttt::DragDrop drag_drop;
     
     ofTexture rendering_scene_thumbnail, rendering_scene_thumbnail2, rendering_scene_thumbnail3;
     
@@ -40,6 +43,4 @@ public:
     int tag_num;
     
     
-    //DRAG DROP TEST
-    std::vector<bool> the_thumbnails;
 };
