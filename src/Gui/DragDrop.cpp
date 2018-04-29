@@ -47,7 +47,10 @@ namespace ttt {
                 ImGui::ImageButton((ImTextureID)(uintptr_t) t.getTextureData().textureID, ImVec2(80, 45), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f), 0);
                 ImGui::EndDragDropSource();
             }
-            ImGui::EndChild(); ImGui::SameLine();
+            ImGui::EndChild();
+            if((preview_index == 0) || (preview_index % 6 != 0)) {
+                ImGui::SameLine();
+            }
             preview_index++;
         }
         style.FramePadding = ImVec2(2.f, 0.f);
