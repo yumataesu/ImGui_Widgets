@@ -157,10 +157,57 @@ void ofApp::draw() {
     }
     
     //HISTGRAM-------------------------------------------------------
-    ImGui::Begin("Histgram");
+    ImGui::Begin("HISTOGRAM");
     histgram.drawGui();
     ImGui::End();
     
+    
+    //KNOB----------------------------------------------------------
+    static float angle = 0;
+    static float angle2 = 0;
+    static float angle3 = 0;
+    static float angle4 = 0;
+    static float angle5 = 0;
+    static float angle6 = 0;
+    static float angle7 = 0;
+    static float angle8 = 0;
+    
+    ImGui::Begin("KNOB");
+    ImGui::Knob("Freq", &angle, 0.f, 10.f); ImGui::SameLine();
+    ImGui::Knob("Prd", &angle2, 0.f, 10.f); ImGui::SameLine();
+    ImGui::Knob("Spd", &angle3, 0.f, 10.f);
+    ImGui::End();
+    
+    
+    
+    //LINE HISTOGRAM-------------------------------------------------
+    float time = ofGetElapsedTimef();
+    for(std::size_t i = 0; i < array_data.size(); ++i) {
+        array_data[i] = ofSignedNoise(i * DEG_TO_RAD + time);
+    }
+    ImGui::Begin("LINE HISTOGRAM");
+    ImGui::PushItemWidth(-1);
+    ImGui::PlotLines("##line_hist", array_data.data(), array_data.size(), 0.f, "", -1.0f, 1.0f, ImVec2(0, 80));
+    ImGui::PopItemWidth();
+    ImGui::End();
+    
+    
+    //LINE HISTOGRAM-------------------------------------------------
+    ImGui::Begin("GRID");
+    static bool selected[16] = { true, false, false, false, false, true, false, false, false, false, true, false, false, false, false, true };
+    for (int i = 0; i < 16; i++) {
+        ImGui::PushID(i);
+        if (ImGui::Selectable("##grid", &selected[i], 0, ImVec2(30, 30))) {
+            int x = i % 4, y = i / 4;
+            if (x > 0) selected[i - 1] ^= 1;
+            if (x < 3) selected[i + 1] ^= 1;
+            if (y > 0) selected[i - 4] ^= 1;
+            if (y < 3) selected[i + 4] ^= 1;
+        }
+        if ((i % 4) < 3) ImGui::SameLine();
+        ImGui::PopID();
+    }
+    ImGui::End();
     
     //RADIOBUTTON-------------------------------------------------------
     ImGui::Begin("RADIO BUTTON");

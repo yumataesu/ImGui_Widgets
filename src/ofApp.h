@@ -7,6 +7,7 @@
 #include "Gui/Histgram.h"
 #include "Gui/Combo.hpp"
 #include "Gui/DragDrop.hpp"
+#include "Gui/Knob.hpp"
 
 
 class ofApp : public ofBaseApp{
@@ -31,6 +32,7 @@ public:
     std::array<ttt::ColorPicker, 12> color_pickers;
     ttt::Histgram histgram;
     ttt::DragDrop drag_drop;
+    ImFont* font;
     
     ofTexture rendering_scene_thumbnail, rendering_scene_thumbnail2, rendering_scene_thumbnail3;
     
@@ -43,4 +45,5 @@ public:
     int tag_num;
     
     
+    std::array<float, 256> array_data;
 };
