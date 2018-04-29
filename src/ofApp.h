@@ -32,9 +32,8 @@ public:
     std::array<ttt::ColorPicker, 12> color_pickers;
     ttt::Histgram histgram;
     ttt::DragDrop drag_drop;
-    ImFont* font;
-    
-    ofTexture rendering_scene_thumbnail, rendering_scene_thumbnail2, rendering_scene_thumbnail3;
+    ImFont* large_font;
+    ImFont* midium_font;
     
     std::array<ofTexture, 6> textures;
     

@@ -5,9 +5,8 @@
 void ofApp::setup() {
     
     ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->ClearFonts();
-    io.Fonts->AddFontFromFileTTF(ofToDataPath("Helvetica-Regular.ttf").c_str(), 10);
-    io.Fonts->Build();
+    midium_font = io.Fonts->AddFontFromFileTTF(ofToDataPath("Helvetica-Regular.ttf").c_str(), 12);
+    large_font  = io.Fonts->AddFontFromFileTTF(ofToDataPath("Helvetica-Regular.ttf").c_str(), 24);
     
     
     imgui.setup();
@@ -15,9 +14,9 @@ void ofApp::setup() {
     style.FrameRounding = 0.f;
     style.WindowPadding = ImVec2(8.f, 8.f);
     style.PopupRounding = 0.f;
-    style.FramePadding = ImVec2(2.f, 0.f);
-    style.ItemSpacing = ImVec2(8.f, 4.f);
-    style.GrabMinSize = 20.f;
+    style.FramePadding  = ImVec2(2.f, 4.f);
+    style.ItemSpacing   = ImVec2(8.f, 4.f);
+    style.GrabMinSize   = 20.f;
     
     
     ImVec4* colors = ImGui::GetStyle().Colors;
@@ -73,11 +72,6 @@ void ofApp::setup() {
     ofLoadImage(textures[3], "VRSP06.gvintermediate.png");
     ofLoadImage(textures[4], "VRSP07.gvintermediate.png");
     ofLoadImage(textures[5], "VRSP08.gvintermediate.png");
-    
-    //rendering_scene_thumbnail = std::make_shared<ofTexture>();
-    rendering_scene_thumbnail.allocate(1280, 720, GL_RGBA);
-    rendering_scene_thumbnail2.allocate(1280, 720, GL_RGBA);
-    rendering_scene_thumbnail3.allocate(1280, 720, GL_RGBA);
     ofEnableArbTex();
     
     
@@ -98,17 +92,28 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    //deltaTime_ += (deltaTime * delta);
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-    ofBackground(45);
+    ofBackground(5);
     auto& style = ImGui::GetStyle();
+    
     
     imgui.begin();
     
+    ImGui::PushFont(midium_font);
+    ImGui::Begin("FPS");
+    ImGui::PushFont(large_font);
+    std::string fps = std::to_string(ofGetFrameRate());
+    ImGui::Text("%s", fps.data());
+    ImGui::PopFont();
+    ImGui::End();
+    ImGui::PopFont();
+    
     {
+        
         static float v = 0.f;
         static float v1 = 0.f;
         static float v2 = 0.f;
@@ -126,6 +131,7 @@ void ofApp::draw() {
         ImGui::End();
     }
     
+
     {
         static float v = 0.f;
         static float v1 = 0.f;
@@ -156,7 +162,7 @@ void ofApp::draw() {
             ImGui::ImageButton((ImTextureID)(uintptr_t) t.getTextureData().textureID, ImVec2(80, 45));
             ImGui::NextColumn();
         }
-        style.FramePadding = ImVec2(2.f, 0.f);
+        style.FramePadding = ImVec2(2.f, 4.f);
         style.ItemSpacing = ImVec2(8.f, 4.f);
         ImGui::End();
     }
@@ -165,7 +171,7 @@ void ofApp::draw() {
     ImGui::Begin("HISTOGRAM");
     histgram.drawGui();
     ImGui::End();
-    
+
     
     //KNOB----------------------------------------------------------
     static float angle = 0;
@@ -286,8 +292,6 @@ void ofApp::draw() {
     drag_drop.drawGui();
 
     
-    
-    
     this->drawGui();
     imgui.end();
 }
@@ -311,7 +315,4 @@ void ofApp::keyReleased(int key){
 
 
 void ofApp::exit() {
-    rendering_scene_thumbnail.clear();
-    rendering_scene_thumbnail2.clear();
-    rendering_scene_thumbnail3.clear();
 }
