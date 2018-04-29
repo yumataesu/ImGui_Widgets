@@ -4,8 +4,13 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
     
-    imgui.setup();
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->ClearFonts();
+    io.Fonts->AddFontFromFileTTF(ofToDataPath("Helvetica-Regular.ttf").c_str(), 10);
+    io.Fonts->Build();
     
+    
+    imgui.setup();
     auto& style = ImGui::GetStyle();
     style.FrameRounding = 0.f;
     style.WindowPadding = ImVec2(8.f, 8.f);
