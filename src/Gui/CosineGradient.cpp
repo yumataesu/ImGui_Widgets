@@ -6,9 +6,7 @@
 //
 //
 
-#include "thCosineGradient.hpp"
-
-using namespace th;
+#include "CosineGradient.hpp"
 
 
 CosineGradient::CosineGradient()
@@ -57,54 +55,56 @@ string CosineGradient::genFragShader(){
 
 void CosineGradient::setup()
 {
-    m_quad.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
-    m_quad.addVertex(ofVec3f(1.0, 1.0, 0.0));
-    m_quad.addTexCoord(ofVec2f(1.0f, 1.0f));
-    m_quad.addVertex(ofVec3f(1.0, -1.0, 0.0));
-    m_quad.addTexCoord(ofVec2f(1.0f, 0.0f));
-    m_quad.addVertex(ofVec3f(-1.0, -1.0, 0.0));
-    m_quad.addTexCoord(ofVec2f(0.0f, 0.0f));
-    m_quad.addVertex(ofVec3f(-1.0, 1.0, 0.0));
-    m_quad.addTexCoord(ofVec2f(0.0f, 1.0f));
+    quad_.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+    quad_.addVertex(ofVec3f(1.0, 1.0, 0.0));
+    quad_.addTexCoord(ofVec2f(1.0f, 1.0f));
+    quad_.addVertex(ofVec3f(1.0, -1.0, 0.0));
+    quad_.addTexCoord(ofVec2f(1.0f, 0.0f));
+    quad_.addVertex(ofVec3f(-1.0, -1.0, 0.0));
+    quad_.addTexCoord(ofVec2f(0.0f, 0.0f));
+    quad_.addVertex(ofVec3f(-1.0, 1.0, 0.0));
+    quad_.addTexCoord(ofVec2f(0.0f, 1.0f));
     
     
-    m_fbo = new ofFbo();
     ofDisableArbTex();
-    m_fbo->allocate(256, 1);
-    m_fbo->begin(); ofClear(0); m_fbo->end();
+    fbo_ = std::make_shared<ofFbo>();
+    fbo_->allocate(256, 1);
+    fbo_->begin(); ofClear(0); fbo_->end();
     ofEnableArbTex();
     
-    m_cosineShader.setupShaderFromSource(GL_VERTEX_SHADER, this->genVertShader());
-    m_cosineShader.setupShaderFromSource(GL_FRAGMENT_SHADER, this->genFragShader());
-    m_cosineShader.bindDefaults();
-    m_cosineShader.linkProgram();
+    cosine_shader_.setupShaderFromSource(GL_VERTEX_SHADER, this->genVertShader());
+    cosine_shader_.setupShaderFromSource(GL_FRAGMENT_SHADER, this->genFragShader());
+    cosine_shader_.bindDefaults();
+    cosine_shader_.linkProgram();
 }
 
 
 void CosineGradient::writeToFbo()
 {
-    m_fbo->begin();
+    fbo_->begin();
     ofClear(0);
-    m_cosineShader.begin();
-    m_cosineShader.setUniform3f("freq", m_freq.x, m_freq.y, m_freq.z);
-    m_cosineShader.setUniform3f("phase", m_phase.x, m_phase.y, m_phase.z);
-    m_quad.draw();
-    m_cosineShader.end();
-    m_fbo->end();
+    cosine_shader_.begin();
+    cosine_shader_.setUniform3f("freq", m_freq.x, m_freq.y, m_freq.z);
+    cosine_shader_.setUniform3f("phase", m_phase.x, m_phase.y, m_phase.z);
+    quad_.draw();
+    cosine_shader_.end();
+    fbo_->end();
 }
 
 void CosineGradient::drawGui()
 {
     bool guishow = true;
-    ImGui::Begin("Color Plette", &guishow, 0);
-    ImGui::ImageButton((ImTextureID)(uintptr_t) m_fbo->getTexture(0).getTextureData().textureID, ImVec2(320, 54));
+    ImGui::Begin("Color Plette");
+    ImGui::PushItemWidth(-1);
+    ImGui::ImageButton((ImTextureID)(uintptr_t) fbo_->getTexture(0).getTextureData().textureID, ImVec2(320, 54));
     ImGui::Text("Freqences");
-    ImGui::SliderFloat("Red Freq", &m_freq.x, 0.0f, 1.0f);
-    ImGui::SliderFloat("Green Freq", &m_freq.y, 0.0f, 1.0f);
-    ImGui::SliderFloat("Blue Freq", &m_freq.z, 0.0f, 1.0f);
+    ImGui::SliderFloat("##RedFreq", &m_freq.x, 0.0f, 1.0f);
+    ImGui::SliderFloat("##GreenFreq", &m_freq.y, 0.0f, 1.0f);
+    ImGui::SliderFloat("##BlueFreq", &m_freq.z, 0.0f, 1.0f);
     ImGui::Text("phase");
-    ImGui::SliderFloat("Red Phase", &m_phase.x, 0.0f, 1.0f);
-    ImGui::SliderFloat("Green Phase", &m_phase.y, 0.0f, 1.0f);
-    ImGui::SliderFloat("Blue Phase", &m_phase.z, 0.0f, 1.0f);
+    ImGui::SliderFloat("##RedPhase", &m_phase.x, 0.0f, 1.0f);
+    ImGui::SliderFloat("##GreenPhase", &m_phase.y, 0.0f, 1.0f);
+    ImGui::SliderFloat("##BluePhase", &m_phase.z, 0.0f, 1.0f);
+    ImGui::PopItemWidth();
     ImGui::End();
 }
