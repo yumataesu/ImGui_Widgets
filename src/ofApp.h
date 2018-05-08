@@ -8,7 +8,7 @@
 #include "Gui/Combo.hpp"
 #include "Gui/DragDrop.hpp"
 #include "Gui/Knob.hpp"
-
+#include "Gui/CosineGradient.hpp"
 
 class ofApp : public ofBaseApp{
     
@@ -43,6 +43,7 @@ public:
     int tabSelected;
     int tag_num;
     
+    CosineGradient cosine_gradient;
     
     std::array<float, 256> array_data;
 };

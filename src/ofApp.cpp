@@ -76,6 +76,7 @@ void ofApp::setup() {
     
     
     drag_drop.loadThumbnails();
+    cosine_gradient.setup();
     
     metatag = { "All", "Primitive", "Realistic", "Potemkin", "Glitch", "Doped" };
     tag_num = metatag.size();
@@ -92,7 +93,7 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
-    
+    cosine_gradient.writeToFbo();
 }
 
 //--------------------------------------------------------------
@@ -291,6 +292,9 @@ void ofApp::draw() {
     //DRAG DROP TEST----------------------------------------------------
     drag_drop.drawGui();
 
+    
+    //COSINE COLOR PALETTE
+    cosine_gradient.drawGui();
     
     this->drawGui();
     imgui.end();
